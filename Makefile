@@ -4,7 +4,7 @@ all:
 	cargo build
 
 run: all
-	./target/debug/mile39
+	./target/debug/api-rs
 
 format:
 	find src tests -type f -exec rustfmt {} \;
