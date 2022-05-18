@@ -6,4 +6,5 @@ pub mod command;
 #[derive(Serialize, Deserialize)]
 pub enum Nouns {
     Location(mile39::nouns::location::Location),
+    UserId(String)
 }

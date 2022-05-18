@@ -7,6 +7,18 @@ use std::sync::Arc;
 mod common;
 
 #[test]
+fn auth() {
+    let db = mile39::db::open();
+    let peer = crate::peer::new(Arc::new(db));
+    let cmd = command::Commands::Auth(command::Auth {
+        device_key: "abc".to_string()
+    });
+    let json = serde_json::to_string(&cmd).unwrap();
+    let result = peer.command(&json).unwrap();
+    assert_eq!("ok", result.msg);
+}
+
+#[test]
 fn write_one_read_one() {
     let db = mile39::db::open();
     let peer = crate::peer::new(Arc::new(db));
@@ -33,6 +45,7 @@ fn write_one_read_one() {
         Nouns::Location(loc) => {
             assert_eq!("2022-05-02", loc.date)
         }
+        _ => assert!(false)
     }
 }
 

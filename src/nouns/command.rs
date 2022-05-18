@@ -7,6 +7,13 @@ use crate::nouns::*;
 pub enum Commands {
     Read(Read),
     Write(Write),
+    #[serde(rename = "auth.session")]
+    Auth(Auth),
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Auth {
+    pub device_key: String,
 }
 
 #[derive(Serialize, Deserialize)]

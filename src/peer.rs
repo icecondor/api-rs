@@ -34,8 +34,18 @@ impl Peer {
         match command {
             command::Commands::Read(read) => read_op(&self.db, &read.params),
             command::Commands::Write(write) => write_op(&self.db, write.params),
+            command::Commands::Auth(auth) => auth_op(&self.db, &auth.device_key),
+            //_ => Err(format!("not implemented"))
         }
     }
+}
+
+pub fn auth_op(db: &mile39::db::Db, device_key: &str) -> PeerResult {
+    let user_id = nouns::Nouns::UserId("abc1".to_string());
+    Ok(command::Response {
+        msg: "ok".to_string(),
+        noun: Some(user_id)
+    })
 }
 
 pub fn read_op(db: &mile39::db::Db, query: &command::QueryById) -> PeerResult {
