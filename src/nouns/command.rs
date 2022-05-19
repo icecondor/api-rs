@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::nouns::*;
+use crate::nouns;
 
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "method")]
@@ -19,7 +19,7 @@ pub struct Auth {
 #[derive(Serialize, Deserialize)]
 pub struct Write {
     pub id: String,
-    pub params: mile39::nouns::location::Location,
+    pub params: nouns::location::Location,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -37,5 +37,5 @@ pub struct QueryById {
 pub struct Response {
     pub msg: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub noun: Option<Nouns>,
+    pub noun: Option<nouns::Nouns>,
 }

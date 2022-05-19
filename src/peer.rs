@@ -7,7 +7,7 @@ use serde_json;
 use crate::nouns;
 use crate::nouns::*;
 
-use mile39::db;
+use dgpdb::db;
 
 pub struct Peer {
     pub user_id: Option<String>,
@@ -40,7 +40,7 @@ impl Peer {
     }
 }
 
-pub fn auth_op(db: &mile39::db::Db, device_key: &str) -> PeerResult {
+pub fn auth_op(db: &db::Db, device_key: &str) -> PeerResult {
     let user_id = nouns::Nouns::UserId("abc1".to_string());
     Ok(command::Response {
         msg: "ok".to_string(),
@@ -48,7 +48,7 @@ pub fn auth_op(db: &mile39::db::Db, device_key: &str) -> PeerResult {
     })
 }
 
-pub fn read_op(db: &mile39::db::Db, query: &command::QueryById) -> PeerResult {
+pub fn read_op(db: &db::Db, query: &command::QueryById) -> PeerResult {
     let path = db.file_from_id(&query.id);
     match File::open(&path) {
         Ok(reader) => {
@@ -65,11 +65,12 @@ pub fn read_op(db: &mile39::db::Db, query: &command::QueryById) -> PeerResult {
     }
 }
 
-pub fn write_op(db: &mile39::db::Db, location: mile39::nouns::location::Location) -> PeerResult {
-    let wrapped_location = &mile39::nouns::Nouns::Location(location);
-    let id = db.write(&wrapped_location);
+pub fn write_op(db: &db::Db, location: nouns::location::Location) -> PeerResult {
+    let value = serde_json::to_value(&location).unwrap();
+    let id = db.write(&value);
     let path = db.file_from_id(&id);
-    fs::write(path, serde_json::to_string(&wrapped_location).unwrap()).unwrap();
+    let json = serde_json::to_string(&location).unwrap();
+    fs::write(path, json).unwrap();
     Ok(command::Response {
         msg: "ok".to_string(),
         noun: None,

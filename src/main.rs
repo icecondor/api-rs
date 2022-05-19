@@ -1,9 +1,9 @@
 mod nouns;
 mod peer;
+mod net;
+mod pool;
 
-use mile39::db;
-use mile39::net;
-use mile39::pool;
+use dgpdb::db;
 
 use std::io::BufRead;
 use std::io::BufReader;
