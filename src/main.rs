@@ -1,15 +1,10 @@
-mod nouns;
-mod peer;
-mod net;
-mod pool;
-
-use dgpdb::db;
-
 use std::io::BufRead;
 use std::io::BufReader;
 use std::io::Write;
 use std::net::TcpStream;
 use std::sync::Arc;
+
+use api_rs::*;
 
 fn main() {
     let db = Arc::new(db::open());

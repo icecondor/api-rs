@@ -11,7 +11,7 @@ fn auth() {
     let db = mile39::db::open();
     let peer = crate::peer::new(Arc::new(db));
     let cmd = command::Commands::Auth(command::Auth {
-        device_key: "abc".to_string()
+        device_key: "abc".to_string(),
     });
     let json = serde_json::to_string(&cmd).unwrap();
     let result = peer.command(&json).unwrap();
@@ -45,7 +45,7 @@ fn write_one_read_one() {
         Nouns::Location(loc) => {
             assert_eq!("2022-05-02", loc.date)
         }
-        _ => assert!(false)
+        _ => assert!(false),
     }
 }
 

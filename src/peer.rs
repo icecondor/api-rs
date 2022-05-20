@@ -4,10 +4,9 @@ use std::sync::Arc;
 
 use serde_json;
 
+use crate::db;
 use crate::nouns;
 use crate::nouns::*;
-
-use dgpdb::db;
 
 pub struct Peer {
     pub user_id: Option<String>,
@@ -40,11 +39,11 @@ impl Peer {
     }
 }
 
-pub fn auth_op(db: &db::Db, device_key: &str) -> PeerResult {
+pub fn auth_op(db: &db::Db, _device_key: &str) -> PeerResult {
     let user_id = nouns::Nouns::UserId("abc1".to_string());
     Ok(command::Response {
         msg: "ok".to_string(),
-        noun: Some(user_id)
+        noun: Some(user_id),
     })
 }
 
