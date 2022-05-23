@@ -2,6 +2,7 @@ mod nouns;
 mod peer;
 mod net;
 mod pool;
+mod config;
 
 use dgpdb::db;
 
@@ -12,13 +13,13 @@ use std::net::TcpStream;
 use std::sync::Arc;
 
 fn main() {
+    let config = config::load();
     let db = Arc::new(db::open());
 
-    let addr = "127.0.0.1:8888";
-    let net = net::setup(addr);
+    let net = net::setup(&config.addr);
     let mut pool = pool::new();
 
-    println!("listening {}", addr);
+    println!("listening {}", config.addr);
     for stream in net.listener.incoming() {
         let dbc = db.clone();
         match stream {
