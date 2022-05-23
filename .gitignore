@@ -2,3 +2,5 @@
 /lmdb-data
 /jsonlake
 /Cargo.lock
+/config.json
+

@@ -1,19 +1,17 @@
-use std::io::BufRead;
-use std::io::BufReader;
-use std::io::Write;
+use std::io::{BufReader, BufRead, Write};
 use std::net::TcpStream;
 use std::sync::Arc;
 
 use api_rs::*;
 
 fn main() {
+    let config = config::load();
     let db = Arc::new(db::open());
 
-    let addr = "127.0.0.1:8888";
-    let net = net::setup(addr);
+    let net = net::setup(&config.addr);
     let mut pool = pool::new();
 
-    println!("listening {}", addr);
+    println!("listening {}", config.addr);
     for stream in net.listener.incoming() {
         let dbc = db.clone();
         match stream {
