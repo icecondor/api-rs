@@ -8,7 +8,7 @@ mod common;
 
 #[test]
 fn auth() {
-    let db = mile39::db::open();
+    let db = db::open();
     let peer = crate::peer::new(Arc::new(db));
     let cmd = command::Commands::Auth(command::Auth {
         device_key: "abc".to_string(),
@@ -20,8 +20,8 @@ fn auth() {
 
 #[test]
 fn write_one_read_one() {
-    let db = mile39::db::open();
-    let peer = crate::peer::new(Arc::new(db));
+    let db = db::open();
+    let peer = peer::new(Arc::new(db));
     let mut locations = common::random_locations(1);
     let location = locations.pop().unwrap();
     let location_id = location.id.to_owned();
@@ -51,7 +51,7 @@ fn write_one_read_one() {
 
 #[test]
 fn write_many_read_by_id() {
-    let db = mile39::db::open();
+    let db = db::open();
     let peer = peer::new(Arc::new(db));
     let locations = common::random_locations(10);
     println!("writing {} locations", locations.len());
