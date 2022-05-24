@@ -10,7 +10,7 @@ mod common;
 fn auth() {
     let db = db::open();
     let peer = crate::peer::new(Arc::new(db));
-    let cmd = command::Commands::Auth(command::Auth {
+    let cmd = api::Commands::Auth(api::Auth {
         device_key: "abc".to_string(),
     });
     let json = serde_json::to_string(&cmd).unwrap();
@@ -25,7 +25,7 @@ fn write_one_read_one() {
     let mut locations = common::random_locations(1);
     let location = locations.pop().unwrap();
     let location_id = location.id.to_owned();
-    let cmd = command::Commands::Write(command::Write {
+    let cmd = api::Commands::Write(api::Write {
         id: "ab12".to_owned(),
         params: location,
     });
@@ -33,16 +33,16 @@ fn write_one_read_one() {
     let result = peer.command(&json).unwrap();
     assert_eq!("ok", result.msg);
 
-    let cmd = command::Commands::Read(command::Read {
+    let cmd = api::Commands::Read(api::Read {
         id: "ab13".to_owned(),
-        params: command::QueryById { id: location_id },
+        params: api::QueryById { id: location_id },
     });
     let json = serde_json::to_string(&cmd).unwrap();
     let result = peer.command(&json).unwrap();
     assert_eq!("ok", result.msg);
     let noun = result.noun.unwrap();
     match noun {
-        Nouns::Location(loc) => {
+        api::Nouns::Location(loc) => {
             assert_eq!("2022-05-02", loc.date)
         }
         _ => assert!(false),
@@ -56,7 +56,7 @@ fn write_many_read_by_id() {
     let locations = common::random_locations(10);
     println!("writing {} locations", locations.len());
     for location in &locations {
-        let cmd = command::Commands::Write(command::Write {
+        let cmd = api::Commands::Write(api::Write {
             id: "ab12".to_owned(),
             params: location.clone(),
         });
@@ -65,9 +65,9 @@ fn write_many_read_by_id() {
         assert_eq!("ok", result.msg);
     }
     for location in &locations {
-        let cmd = command::Commands::Read(command::Read {
+        let cmd = api::Commands::Read(api::Read {
             id: "ab13".to_owned(),
-            params: command::QueryById {
+            params: api::QueryById {
                 id: location.id.to_owned(),
             },
         });
