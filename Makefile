@@ -10,4 +10,4 @@ format:
 	find src tests -type f -exec rustfmt {} \;
 
 test:
-	cargo test
+	cargo test -- --nocapture
