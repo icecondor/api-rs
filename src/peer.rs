@@ -1,6 +1,7 @@
 use std::fs;
 use std::fs::File;
 use std::sync::Arc;
+use protobuf::Message;
 
 use serde_json;
 
@@ -50,8 +51,8 @@ pub fn auth_op(db: &db::Db, _device_key: &str) -> PeerResult {
 pub fn read_op(db: &db::Db, query: &api::QueryById) -> PeerResult {
     let path = db.file_from_id(&query.id);
     match File::open(&path) {
-        Ok(reader) => {
-            let location : nouns::location::Location = serde_json::from_reader(reader).unwrap();
+        Ok(mut reader) => {
+            let location = nouns::location::Location::parse_from_reader(&mut reader).unwrap();
             let noun: api::Nouns = api::Nouns::Location(location);
             Ok(api::Response {
                 msg: "ok".to_string(),
@@ -71,7 +72,7 @@ pub fn write_op(db: &db::Db, location: nouns::location::Location) -> PeerResult 
     let path = db.file_from_id(&id);
     let json = serde_json::to_string(&location).unwrap();
     println!("write_op: {} {}", path, json);
-    fs::write(path, json).unwrap();
+    location.write_to_writer(&mut fs::File::create(path).unwrap());
     Ok(api::Response {
         msg: "ok".to_string(),
         noun: None,
