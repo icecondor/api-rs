@@ -51,7 +51,8 @@ pub fn read_op(db: &db::Db, query: &api::QueryById) -> PeerResult {
     let path = db.file_from_id(&query.id);
     match File::open(&path) {
         Ok(reader) => {
-            let noun: api::Nouns = serde_json::from_reader(reader).unwrap();
+            let location : nouns::location::Location = serde_json::from_reader(reader).unwrap();
+            let noun: api::Nouns = api::Nouns::Location(location);
             Ok(api::Response {
                 msg: "ok".to_string(),
                 noun: Some(noun),
