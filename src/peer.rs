@@ -2,9 +2,9 @@ use std::fs;
 use std::fs::File;
 use std::sync::Arc;
 
-use serde_json;
 use protobuf::Message;
 use redis::Commands;
+use serde_json;
 
 use crate::api;
 use crate::db;
@@ -13,14 +13,16 @@ use crate::nouns;
 pub struct Peer {
     pub user_id: Option<String>,
     pub db: Arc<db::Db>,
+    pub redis: redis::Connection,
 }
 
 type PeerResult = Result<api::Response, String>;
 
-pub fn new(db: Arc<db::Db>) -> Peer {
+pub fn new(db: Arc<db::Db>, redis: redis::Connection) -> Peer {
     Peer {
         user_id: None,
         db: db,
+        redis: redis,
     }
 }
 
@@ -35,27 +37,27 @@ impl Peer {
         match command {
             api::Commands::Read(read) => read_op(&self.db, &read.params),
             api::Commands::Write(write) => write_op(&self.db, write.params),
-            api::Commands::AuthBySession(auth) => auth_device_op(&self.db, &auth.params),
-            api::Commands::AuthByEmail(auth) => auth_email_op(&self.db, &auth.params),
+            api::Commands::AuthBySession(auth) => self.auth_session_op(&auth.params),
+            api::Commands::AuthByEmail(auth) => self.auth_email_op(&auth.params),
             //_ => Err(format!("not implemented"))
         }
     }
-}
 
-pub fn auth_device_op(db: &db::Db, device_key: &api::DeviceId) -> PeerResult {
-    let user_id = api::Nouns::UserId("abc1".to_string());
-    Ok(api::Response {
-        msg: "ok".to_string(),
-        noun: Some(user_id),
-    })
-}
+    pub fn auth_session_op(&self, device_key: &api::DeviceId) -> PeerResult {
+        let user_id = api::Nouns::UserId("abc1".to_string());
+        Ok(api::Response {
+            msg: "ok".to_string(),
+            noun: Some(user_id),
+        })
+    }
 
-pub fn auth_email_op(db: &db::Db, email: &api::Email) -> PeerResult {
-    let user_id = api::Nouns::UserId("abc1".to_string());
-    Ok(api::Response {
-        msg: "ok".to_string(),
-        noun: Some(user_id),
-    })
+    pub fn auth_email_op(&self, email: &api::Email) -> PeerResult {
+        let user_id = api::Nouns::UserId("abc1".to_string());
+        Ok(api::Response {
+            msg: "ok".to_string(),
+            noun: Some(user_id),
+        })
+    }
 }
 
 pub fn read_op(db: &db::Db, query: &api::QueryById) -> PeerResult {

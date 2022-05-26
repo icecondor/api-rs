@@ -23,7 +23,9 @@ fn main() {
 }
 
 fn peer_reader(mut stream: TcpStream, db: Arc<db::Db>) {
-    let peer = peer::new(db);
+    let client = redis::Client::open("redis://127.0.0.1/").unwrap();
+    let con = client.get_connection().unwrap();
+    let peer = peer::new(db, con);
     println!(
         "connected from {} to {}",
         stream.peer_addr().unwrap(),

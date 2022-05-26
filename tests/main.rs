@@ -4,10 +4,16 @@ use std::sync::Arc;
 
 mod common;
 
+fn setup() -> peer::Peer {
+    let db = db::open();
+    let client = redis::Client::open("redis://127.0.0.1/").unwrap();
+    let con = client.get_connection().unwrap();
+    peer::new(Arc::new(db), con)
+}
+
 #[test]
 fn write_one_read_one() {
-    let db = db::open();
-    let peer = peer::new(Arc::new(db));
+    let peer = setup();
     let mut locations = common::random_locations(1);
     let location = locations.pop().unwrap();
     let location_id = location.id.to_owned();
@@ -37,8 +43,7 @@ fn write_one_read_one() {
 
 #[test]
 fn write_many_read_by_id() {
-    let db = db::open();
-    let peer = peer::new(Arc::new(db));
+    let peer = setup();
     let locations = common::random_locations(10);
     println!("writing {} locations", locations.len());
     for location in &locations {
@@ -65,8 +70,7 @@ fn write_many_read_by_id() {
 
 #[test]
 fn auth_by_device() {
-    let db = db::open();
-    let peer = peer::new(Arc::new(db));
+    let peer = setup();
     let cmd = api::Commands::AuthBySession(api::AuthByDevice {
         id: common::id_generate(),
         params: api::DeviceId {
@@ -80,8 +84,7 @@ fn auth_by_device() {
 
 #[test]
 fn auth_by_email() {
-    let db = db::open();
-    let peer = crate::peer::new(Arc::new(db));
+    let peer = setup();
     let cmd = api::Commands::AuthByEmail(api::AuthByEmail {
         id: common::id_generate(),
         params: api::Email {
