@@ -1,7 +1,7 @@
+use protobuf::Message;
 use std::fs;
 use std::fs::File;
 use std::sync::Arc;
-use protobuf::Message;
 
 use serde_json;
 
@@ -80,7 +80,9 @@ pub fn write_op(db: &db::Db, location: nouns::location::Location) -> PeerResult 
     let path = db.file_from_id(&id);
     let json = serde_json::to_string(&location).unwrap();
     println!("write_op: {} {}", path, json);
-    location.write_to_writer(&mut fs::File::create(path).unwrap()).unwrap();
+    location
+        .write_to_writer(&mut fs::File::create(path).unwrap())
+        .unwrap();
     Ok(api::Response {
         msg: "ok".to_string(),
         noun: None,

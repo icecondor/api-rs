@@ -20,7 +20,7 @@ fn write_one_read_one() {
     assert_eq!("ok", result.msg);
 
     let cmd = api::Commands::Read(api::Read {
-        id: "ab13".to_owned(),
+        id: common::id_generate(),
         params: api::QueryById { id: location_id },
     });
     let json = serde_json::to_string(&cmd).unwrap();
@@ -43,7 +43,7 @@ fn write_many_read_by_id() {
     println!("writing {} locations", locations.len());
     for location in &locations {
         let cmd = api::Commands::Write(api::Write {
-            id: "ab12".to_owned(),
+            id: common::id_generate(),
             params: location.clone(),
         });
         let json = serde_json::to_string(&cmd).unwrap();
@@ -52,7 +52,7 @@ fn write_many_read_by_id() {
     }
     for location in &locations {
         let cmd = api::Commands::Read(api::Read {
-            id: "ab13".to_owned(),
+            id: common::id_generate(),
             params: api::QueryById {
                 id: location.id.to_owned(),
             },
@@ -68,9 +68,11 @@ fn auth_by_device() {
     let db = db::open();
     let peer = peer::new(Arc::new(db));
     let cmd = api::Commands::AuthBySession(api::AuthByDevice {
-        id: "ab13".to_owned(),
-        params: api::DeviceId{ device_id: "devicekey1".to_owned(),}
-        },);
+        id: common::id_generate(),
+        params: api::DeviceId {
+            device_id: "devicekey1".to_owned(),
+        },
+    });
     let json = serde_json::to_string(&cmd).unwrap();
     let result = peer.command(&json).unwrap();
     assert_eq!("ok", result.msg);
@@ -80,12 +82,13 @@ fn auth_by_device() {
 fn auth_by_email() {
     let db = db::open();
     let peer = crate::peer::new(Arc::new(db));
-    let cmd = api::Commands::AuthByEmail(api::AuthByEmail{
+    let cmd = api::Commands::AuthByEmail(api::AuthByEmail {
         id: common::id_generate(),
-        params: api::Email{ email: "a@b.c".to_string()},
+        params: api::Email {
+            email: "a@b.c".to_string(),
+        },
     });
     let json = serde_json::to_string(&cmd).unwrap();
     let result = peer.command(&json).unwrap();
     assert_eq!("ok", result.msg);
 }
-
