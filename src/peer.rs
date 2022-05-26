@@ -34,7 +34,8 @@ impl Peer {
         match command {
             api::Commands::Read(read) => read_op(&self.db, &read.params),
             api::Commands::Write(write) => write_op(&self.db, write.params),
-            api::Commands::Auth(auth) => auth_op(&self.db, &auth.device_key),
+            api::Commands::AuthBySession(auth) => auth_op(&self.db, &auth.device_key),
+            api::Commands::AuthByEmail(auth) => auth_op(&self.db, &auth.email),
             //_ => Err(format!("not implemented"))
         }
     }
@@ -67,12 +68,11 @@ pub fn read_op(db: &db::Db, query: &api::QueryById) -> PeerResult {
 }
 
 pub fn write_op(db: &db::Db, location: nouns::location::Location) -> PeerResult {
-    let value = serde_json::to_value(&location).unwrap();
     let id = db.write(&location);
     let path = db.file_from_id(&id);
     let json = serde_json::to_string(&location).unwrap();
     println!("write_op: {} {}", path, json);
-    location.write_to_writer(&mut fs::File::create(path).unwrap());
+    location.write_to_writer(&mut fs::File::create(path).unwrap()).unwrap();
     Ok(api::Response {
         msg: "ok".to_string(),
         noun: None,

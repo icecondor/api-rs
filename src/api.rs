@@ -5,21 +5,30 @@ use crate::nouns;
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "method")]
 pub enum Commands {
+    #[serde(rename = "activity.get")]
     Read(Read),
+    #[serde(rename = "activity.add")]
     Write(Write),
     #[serde(rename = "auth.session")]
-    Auth(Auth),
+    AuthBySession(AuthByDevice),
+    #[serde(rename = "auth.email")]
+    AuthByEmail(AuthByEmail),
 }
 
 #[derive(Serialize, Deserialize)]
 pub enum Nouns {
     Location(nouns::location::Location),
-    UserId(String),
+    UserId(String)
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct Auth {
+pub struct AuthByDevice{
     pub device_key: String,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct AuthByEmail{
+    pub email: String,
 }
 
 #[derive(Serialize, Deserialize)]

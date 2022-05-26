@@ -1,5 +1,3 @@
-//use crate::nouns::*;
-use api_rs::nouns::*;
 use api_rs::*;
 
 use std::sync::Arc;
@@ -10,7 +8,7 @@ mod common;
 fn auth() {
     let db = db::open();
     let peer = crate::peer::new(Arc::new(db));
-    let cmd = api::Commands::Auth(api::Auth {
+    let cmd = api::Commands::AuthBySession(api::AuthByDevice {
         device_key: "abc".to_string(),
     });
     let json = serde_json::to_string(&cmd).unwrap();
