@@ -18,16 +18,27 @@ pub enum Commands {
 #[derive(Serialize, Deserialize)]
 pub enum Nouns {
     Location(nouns::location::Location),
-    UserId(String)
+    UserId(String),
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct AuthByDevice{
-    pub device_key: String,
+pub struct AuthByDevice {
+    pub id: String,
+    pub params: DeviceId,
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct AuthByEmail{
+pub struct DeviceId {
+    pub device_id: String,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct AuthByEmail {
+    pub id: String,
+    pub params: Email,
+}
+#[derive(Serialize, Deserialize)]
+pub struct Email {
     pub email: String,
 }
 

@@ -5,18 +5,6 @@ use std::sync::Arc;
 mod common;
 
 #[test]
-fn auth() {
-    let db = db::open();
-    let peer = crate::peer::new(Arc::new(db));
-    let cmd = api::Commands::AuthBySession(api::AuthByDevice {
-        device_key: "abc".to_string(),
-    });
-    let json = serde_json::to_string(&cmd).unwrap();
-    let result = peer.command(&json).unwrap();
-    assert_eq!("ok", result.msg);
-}
-
-#[test]
 fn write_one_read_one() {
     let db = db::open();
     let peer = peer::new(Arc::new(db));
@@ -74,3 +62,30 @@ fn write_many_read_by_id() {
         assert_eq!("ok", result.msg);
     }
 }
+
+#[test]
+fn auth_by_device() {
+    let db = db::open();
+    let peer = peer::new(Arc::new(db));
+    let cmd = api::Commands::AuthBySession(api::AuthByDevice {
+        id: "ab13".to_owned(),
+        params: api::DeviceId{ device_id: "devicekey1".to_owned(),}
+        },);
+    let json = serde_json::to_string(&cmd).unwrap();
+    let result = peer.command(&json).unwrap();
+    assert_eq!("ok", result.msg);
+}
+
+#[test]
+fn auth_by_email() {
+    let db = db::open();
+    let peer = crate::peer::new(Arc::new(db));
+    let cmd = api::Commands::AuthByEmail(api::AuthByEmail{
+        id: common::id_generate(),
+        params: api::Email{ email: "a@b.c".to_string()},
+    });
+    let json = serde_json::to_string(&cmd).unwrap();
+    let result = peer.command(&json).unwrap();
+    assert_eq!("ok", result.msg);
+}
+

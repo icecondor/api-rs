@@ -34,14 +34,22 @@ impl Peer {
         match command {
             api::Commands::Read(read) => read_op(&self.db, &read.params),
             api::Commands::Write(write) => write_op(&self.db, write.params),
-            api::Commands::AuthBySession(auth) => auth_op(&self.db, &auth.device_key),
-            api::Commands::AuthByEmail(auth) => auth_op(&self.db, &auth.email),
+            api::Commands::AuthBySession(auth) => auth_device_op(&self.db, &auth.params),
+            api::Commands::AuthByEmail(auth) => auth_email_op(&self.db, &auth.params),
             //_ => Err(format!("not implemented"))
         }
     }
 }
 
-pub fn auth_op(db: &db::Db, _device_key: &str) -> PeerResult {
+pub fn auth_device_op(db: &db::Db, device_key: &api::DeviceId) -> PeerResult {
+    let user_id = api::Nouns::UserId("abc1".to_string());
+    Ok(api::Response {
+        msg: "ok".to_string(),
+        noun: Some(user_id),
+    })
+}
+
+pub fn auth_email_op(db: &db::Db, email: &api::Email) -> PeerResult {
     let user_id = api::Nouns::UserId("abc1".to_string());
     Ok(api::Response {
         msg: "ok".to_string(),
