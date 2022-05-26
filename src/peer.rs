@@ -1,9 +1,10 @@
-use protobuf::Message;
 use std::fs;
 use std::fs::File;
 use std::sync::Arc;
 
 use serde_json;
+use protobuf::Message;
+use redis::Commands;
 
 use crate::api;
 use crate::db;
