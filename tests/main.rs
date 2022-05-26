@@ -13,12 +13,12 @@ fn setup() -> peer::Peer {
 
 #[test]
 fn write_one_read_one() {
-    let peer = setup();
+    let mut peer = setup();
     let mut locations = common::random_locations(1);
     let location = locations.pop().unwrap();
     let location_id = location.id.to_owned();
     let cmd = api::Commands::Write(api::Write {
-        id: "ab12".to_owned(),
+        id: common::id_generate(),
         params: location,
     });
     let json = serde_json::to_string(&cmd).unwrap();
@@ -43,7 +43,7 @@ fn write_one_read_one() {
 
 #[test]
 fn write_many_read_by_id() {
-    let peer = setup();
+    let mut peer = setup();
     let locations = common::random_locations(10);
     println!("writing {} locations", locations.len());
     for location in &locations {
@@ -70,7 +70,7 @@ fn write_many_read_by_id() {
 
 #[test]
 fn auth_by_device() {
-    let peer = setup();
+    let mut peer = setup();
     let cmd = api::Commands::AuthBySession(api::AuthByDevice {
         id: common::id_generate(),
         params: api::DeviceId {
@@ -84,7 +84,7 @@ fn auth_by_device() {
 
 #[test]
 fn auth_by_email() {
-    let peer = setup();
+    let mut peer = setup();
     let cmd = api::Commands::AuthByEmail(api::AuthByEmail {
         id: common::id_generate(),
         params: api::Email {

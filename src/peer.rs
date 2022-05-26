@@ -27,13 +27,13 @@ pub fn new(db: Arc<db::Db>, redis: redis::Connection) -> Peer {
 }
 
 impl Peer {
-    pub fn command(&self, line: &str) -> PeerResult {
+    pub fn command(&mut self, line: &str) -> PeerResult {
         let command: api::Commands = serde_json::from_str(&line).unwrap();
         println!("{}", serde_json::to_string(&command).unwrap());
         self.do_command(command)
     }
 
-    pub fn do_command(&self, command: api::Commands) -> PeerResult {
+    pub fn do_command(&mut self, command: api::Commands) -> PeerResult {
         match command {
             api::Commands::Read(read) => read_op(&self.db, &read.params),
             api::Commands::Write(write) => write_op(&self.db, write.params),
@@ -43,7 +43,8 @@ impl Peer {
         }
     }
 
-    pub fn auth_session_op(&self, device_key: &api::DeviceId) -> PeerResult {
+    pub fn auth_session_op(&mut self, device_key: &api::DeviceId) -> PeerResult {
+        let ret: Result<String, _> = self.redis.hget("session_keys", &device_key.device_id);
         let user_id = api::Nouns::UserId("abc1".to_string());
         Ok(api::Response {
             msg: "ok".to_string(),
