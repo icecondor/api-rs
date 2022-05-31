@@ -4,7 +4,6 @@ use std::sync::Arc;
 
 use protobuf::Message;
 use redis::Commands;
-use serde_json;
 
 use crate::api;
 use crate::db;
@@ -27,14 +26,8 @@ pub fn new(db: Arc<db::Db>, redis: redis::Connection) -> Peer {
 }
 
 impl Peer {
-    pub fn command(&mut self, line: &str) -> PeerResult {
-        println!("{}", line);
-        let command: api::Commands = serde_json::from_str(&line).unwrap();
-        //println!("{}", serde_json::to_string(&command).unwrap());
-        self.do_command(command)
-    }
 
-    pub fn do_command(&mut self, command: api::Commands) -> PeerResult {
+    pub fn command(&mut self, command: api::Commands) -> PeerResult {
         match command {
             api::Commands::Read(read) => read_op(&self.db, &read.params),
             api::Commands::Write(write) => write_op(&self.db, write.params),
@@ -83,8 +76,7 @@ pub fn read_op(db: &db::Db, query: &api::QueryById) -> PeerResult {
 pub fn write_op(db: &db::Db, location: nouns::location::Location) -> PeerResult {
     let id = db.write(&location);
     let path = db.file_from_id(&id);
-    let json = serde_json::to_string(&location).unwrap();
-    println!("write_op: {} {}", path, json);
+    println!("write_op: {}", path);
     location
         .write_to_writer(&mut fs::File::create(path).unwrap())
         .unwrap();
