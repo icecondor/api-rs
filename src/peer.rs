@@ -28,8 +28,9 @@ pub fn new(db: Arc<db::Db>, redis: redis::Connection) -> Peer {
 
 impl Peer {
     pub fn command(&mut self, line: &str) -> PeerResult {
+        println!("{}", line);
         let command: api::Commands = serde_json::from_str(&line).unwrap();
-        println!("{}", serde_json::to_string(&command).unwrap());
+        //println!("{}", serde_json::to_string(&command).unwrap());
         self.do_command(command)
     }
 
@@ -52,7 +53,7 @@ impl Peer {
         })
     }
 
-    pub fn auth_email_op(&self, email: &api::Email) -> PeerResult {
+    pub fn auth_email_op(&self, _email: &api::Email) -> PeerResult {
         let user_id = api::Nouns::UserId("abc1".to_string());
         Ok(api::Response {
             msg: "ok".to_string(),
