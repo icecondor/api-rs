@@ -32,11 +32,16 @@ fn peer_reader(mut stream: TcpStream, db: Arc<db::Db>) {
         stream.local_addr().unwrap()
     );
     let reader = BufReader::new(stream.try_clone().unwrap());
-    for line in reader.lines() {
-        let command: api::Commands = serde_json::from_str(&line.unwrap()).unwrap();
-        let result = peer.command(command).unwrap();
-        let mut json = serde_json::to_string(&result).unwrap();
-        json.push_str("\n");
-        stream.write(json.as_bytes()).unwrap();
+    for line_io in reader.lines() {
+        let line = line_io.unwrap();
+        match serde_json::from_str(&line) {
+            Ok(command) => {
+                let result = peer.command(command).unwrap();
+                let mut json = serde_json::to_string(&result).unwrap();
+                json.push_str("\n");
+                stream.write(json.as_bytes()).unwrap();
+            }
+            Err(_) => println!("jsonerr: {}", line),
+        }
     }
 }

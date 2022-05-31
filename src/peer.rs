@@ -26,7 +26,6 @@ pub fn new(db: Arc<db::Db>, redis: redis::Connection) -> Peer {
 }
 
 impl Peer {
-
     pub fn command(&mut self, command: api::Commands) -> PeerResult {
         match command {
             api::Commands::Read(read) => read_op(&self.db, &read.params),
