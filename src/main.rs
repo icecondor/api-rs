@@ -34,7 +34,7 @@ fn peer_reader(mut stream: TcpStream, db: Arc<db::Db>) {
 
     // hello
     let hello = api::JsonRPCRequest {
-        id: "ehlo".to_owned(),
+        id: "hello".to_owned(),
         method: api::Commands::Hello(api::ServerName {
             name: "z".to_owned(),
             version: "1".to_owned(),
