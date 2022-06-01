@@ -28,8 +28,8 @@ impl Peer {
         match command {
             api::Commands::Read(read) => read_op(&self.db, &read.params),
             api::Commands::Write(write) => write_op(&self.db, write.params),
-            api::Commands::AuthBySession(auth) => self.auth_session_op(&auth.params),
-            api::Commands::AuthByEmail(auth) => self.auth_email_op(&auth.params),
+            api::Commands::AuthBySession(device_id) => self.auth_session_op(&device_id),
+            api::Commands::AuthByEmail(email) => self.auth_email_op(&email),
             _ => api::Response::Error(format!("not implemented")),
         }
     }
@@ -40,9 +40,7 @@ impl Peer {
             .hget("session_keys", &device_key.device_key)
             .unwrap();
         let session: api::Session = serde_json::from_str(&session_json).unwrap();
-        api::Response::Result(api::Nouns::UserId(api::UserId {
-            id: session.user_id,
-        }))
+        api::Response::Result(api::Nouns::UserId(api::UserId{id:session.user_id}))
     }
 
     pub fn auth_email_op(&self, _email: &api::Email) -> api::Response {

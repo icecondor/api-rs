@@ -3,16 +3,16 @@ use serde::{Deserialize, Serialize};
 use crate::nouns;
 
 #[derive(Serialize, Deserialize)]
-#[serde(tag = "method", content = "params")]
+#[serde(tag="method", content="params")]
 pub enum Commands {
     #[serde(rename = "activity.get")]
     Read(Read),
     #[serde(rename = "activity.add")]
     Write(Write),
     #[serde(rename = "auth.session")]
-    AuthBySession(AuthByDevice),
+    AuthBySession(DeviceKey),
     #[serde(rename = "auth.email")]
-    AuthByEmail(AuthByEmail),
+    AuthByEmail(Email),
     #[serde(rename = "hello")]
     Hello(ServerName),
 }
@@ -21,12 +21,6 @@ pub enum Commands {
 pub enum Nouns {
     Location(nouns::location::Location),
     UserId(UserId),
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct AuthByDevice {
-    pub id: String,
-    pub params: DeviceKey,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -52,11 +46,6 @@ pub struct DeviceKey {
     pub device_key: String,
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct AuthByEmail {
-    pub id: String,
-    pub params: Email,
-}
 #[derive(Serialize, Deserialize)]
 pub struct Email {
     pub email: String,
