@@ -90,6 +90,13 @@ pub enum Response {
     Error(String),
     Result(Nouns),
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct JsonRPCRequest {
+     pub id: String,
+     pub method: Commands
+}
+
 #[derive(Serialize, Deserialize)]
 pub struct JsonRPCResponse {
      pub id: String,

@@ -47,12 +47,12 @@ fn peer_reader(mut stream: TcpStream, db: Arc<db::Db>) {
     let reader = BufReader::new(stream.try_clone().unwrap());
     for line_io in reader.lines() {
         let line = line_io.unwrap();
-        match serde_json::from_str(&line) {
-            Ok(command) => {
+        match serde_json::from_str::<api::JsonRPCRequest>(&line) {
+            Ok(request) => {
                 println!("{}", line);
-                let result = peer.command(command);
-                let response = api::JsonRPCResponse { id: command.id, result: result };
-                let mut json = serde_json::to_string(&result).unwrap();
+                let result = peer.command(request.method);
+                let response = api::JsonRPCResponse { id: "a".to_owned(), result: result };
+                let mut json = serde_json::to_string(&response).unwrap();
                 json.push_str("\n");
                 println!("{}", json);
                 stream.write(json.as_bytes()).unwrap();
