@@ -40,7 +40,9 @@ impl Peer {
             .hget("session_keys", &device_key.device_key)
             .unwrap();
         let session: api::Session = serde_json::from_str(&session_json).unwrap();
-        api::Response::Result(api::Nouns::UserId(api::UserId{id:session.user_id}))
+        api::Response::Result(api::Nouns::UserId(api::UserId {
+            id: session.user_id,
+        }))
     }
 
     pub fn auth_email_op(&self, _email: &api::Email) -> api::Response {
