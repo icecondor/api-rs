@@ -30,7 +30,7 @@ pub struct AuthByDevice {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct Hello{
+pub struct Hello {
     pub id: String,
     pub params: ServerDetail,
 }
