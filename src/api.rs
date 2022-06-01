@@ -16,7 +16,7 @@ pub enum Commands {
     #[serde(rename = "hello")]
     Hello(ServerName),
     #[serde(rename = "user.detail")]
-    UserDetail
+    UserDetail(Option<Username>)
 }
 
 #[derive(Serialize, Deserialize)]
@@ -29,6 +29,11 @@ pub enum Nouns {
 #[derive(Serialize, Deserialize)]
 pub struct UserId {
     pub id: String,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Username{
+    pub username: String,
 }
 
 #[derive(Serialize, Deserialize)]
