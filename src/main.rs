@@ -53,6 +53,7 @@ fn peer_reader(mut stream: TcpStream, db: Arc<db::Db>) {
                 let result = peer.command(command);
                 let mut json = serde_json::to_string(&result).unwrap();
                 json.push_str("\n");
+                println!("{}", json);
                 stream.write(json.as_bytes()).unwrap();
             }
             Err(_) => println!("jsonerr: {}", line),

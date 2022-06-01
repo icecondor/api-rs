@@ -90,10 +90,8 @@ pub enum Response {
     Error(String),
     Result(Nouns),
 }
-//#[derive(Serialize, Deserialize)]
-//pub struct Response {
-//     #[serde(skip_serializing_if = "Option::is_none")]
-//     pub error: Option<String>,
-//     #[serde(skip_serializing_if = "Option::is_none")]
-//     pub result: Option<Nouns>,
-// }
+#[derive(Serialize, Deserialize)]
+pub struct JsonRPCResponse {
+     pub id: String,
+     pub result: Response
+}
