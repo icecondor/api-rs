@@ -51,6 +51,7 @@ fn peer_reader(mut stream: TcpStream, db: Arc<db::Db>) {
             Ok(command) => {
                 println!("{}", line);
                 let result = peer.command(command);
+                let response = api::JsonRPCResponse { id: command.id, result: result };
                 let mut json = serde_json::to_string(&result).unwrap();
                 json.push_str("\n");
                 println!("{}", json);
