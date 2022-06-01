@@ -94,11 +94,13 @@ pub enum Response {
 #[derive(Serialize, Deserialize)]
 pub struct JsonRPCRequest {
     pub id: String,
+    #[serde(flatten)]
     pub method: Commands,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct JsonRPCResponse {
     pub id: String,
+    #[serde(flatten)]
     pub result: Response,
 }
