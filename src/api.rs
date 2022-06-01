@@ -20,11 +20,11 @@ pub enum Commands {
 #[derive(Serialize, Deserialize)]
 pub enum Nouns {
     Location(nouns::location::Location),
+    #[serde(rename = "user")]
     UserId(UserId),
 }
 
 #[derive(Serialize, Deserialize)]
-#[serde(rename = "user")]
 pub struct UserId {
     pub id: String,
 }
