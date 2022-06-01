@@ -31,8 +31,17 @@ fn peer_reader(mut stream: TcpStream, db: Arc<db::Db>) {
         stream.peer_addr().unwrap(),
         stream.local_addr().unwrap()
     );
+    let hello = api::Commands::Hello(api::Hello {
+        id: "12cl".to_owned(),
+        params: api::ServerDetail {
+            name: "z".to_owned(),
+            version: "1".to_owned(),
+        },
+    });
+    let mut hello_json = serde_json::to_string(&hello).unwrap();
+    hello_json.push_str("\n");
+    stream.write(hello_json.as_bytes());
     let reader = BufReader::new(stream.try_clone().unwrap());
-    stream.write("{\"id\":\"cd770d84\",\"method\":\"hello\",\"params\":{}}".as_bytes());
     for line_io in reader.lines() {
         let line = line_io.unwrap();
         match serde_json::from_str(&line) {

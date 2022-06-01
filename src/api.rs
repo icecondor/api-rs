@@ -13,6 +13,8 @@ pub enum Commands {
     AuthBySession(AuthByDevice),
     #[serde(rename = "auth.email")]
     AuthByEmail(AuthByEmail),
+    #[serde(rename = "hello")]
+    Hello(Hello),
 }
 
 #[derive(Serialize, Deserialize)]
@@ -25,6 +27,18 @@ pub enum Nouns {
 pub struct AuthByDevice {
     pub id: String,
     pub params: DeviceId,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Hello {
+    pub id: String,
+    pub params: ServerDetail,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct ServerDetail {
+    pub name: String,
+    pub version: String,
 }
 
 #[derive(Serialize, Deserialize)]

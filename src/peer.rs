@@ -32,7 +32,7 @@ impl Peer {
             api::Commands::Write(write) => write_op(&self.db, write.params),
             api::Commands::AuthBySession(auth) => self.auth_session_op(&auth.params),
             api::Commands::AuthByEmail(auth) => self.auth_email_op(&auth.params),
-            //_ => Err(format!("not implemented"))
+            _ => Err(format!("not implemented")),
         }
     }
 
