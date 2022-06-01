@@ -78,6 +78,7 @@ fn auth_by_device() {
         },
     });
     let json = serde_json::to_string(&cmd).unwrap();
+    println!("test auth_by_device {}", json);
     let result = peer.command(&json).unwrap();
     assert_eq!("ok", result.msg);
 }

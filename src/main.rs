@@ -51,7 +51,6 @@ fn peer_reader(mut stream: TcpStream, db: Arc<db::Db>) {
         println!("{}", line);
         match serde_json::from_str::<api::JsonRPCRequest>(&line) {
             Ok(request) => {
-                println!("{}", line);
                 let result = peer.command(request.method);
                 let response = api::JsonRPCResponse {
                     id: request.id,
@@ -62,7 +61,7 @@ fn peer_reader(mut stream: TcpStream, db: Arc<db::Db>) {
                 println!("{}", json);
                 stream.write(json.as_bytes()).unwrap();
             }
-            Err(_) => println!("jsonerr: {}", line),
+            Err(e) => println!("jsonerr: {}", e),
         }
     }
 }
