@@ -17,8 +17,6 @@ pub enum Commands {
     Hello(Hello),
 }
 
-type UserId = String;
-
 #[derive(Serialize, Deserialize)]
 pub enum Nouns {
     Location(nouns::location::Location),
@@ -29,6 +27,12 @@ pub enum Nouns {
 pub struct AuthByDevice {
     pub id: String,
     pub params: DeviceKey,
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(rename = "user")]
+pub struct UserId {
+    pub id: String,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -82,8 +86,14 @@ pub struct QueryById {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct Response {
-    pub msg: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub result: Option<Nouns>,
+pub enum Response {
+    Error(String),
+    Result(Nouns),
 }
+//#[derive(Serialize, Deserialize)]
+//pub struct Response {
+//     #[serde(skip_serializing_if = "Option::is_none")]
+//     pub error: Option<String>,
+//     #[serde(skip_serializing_if = "Option::is_none")]
+//     pub result: Option<Nouns>,
+// }
