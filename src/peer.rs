@@ -36,8 +36,8 @@ impl Peer {
         }
     }
 
-    pub fn auth_session_op(&mut self, device_key: &api::DeviceId) -> PeerResult {
-        let ret: Result<String, _> = self.redis.hget("session_keys", &device_key.device_id);
+    pub fn auth_session_op(&mut self, device_key: &api::DeviceKey) -> PeerResult {
+        let ret: Result<String, _> = self.redis.hget("session_keys", &device_key.device_key);
         let user_id = api::Nouns::UserId("abc1".to_string());
         Ok(api::Response {
             msg: "ok".to_string(),

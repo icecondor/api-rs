@@ -26,11 +26,11 @@ pub enum Nouns {
 #[derive(Serialize, Deserialize)]
 pub struct AuthByDevice {
     pub id: String,
-    pub params: DeviceId,
+    pub params: DeviceKey,
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct Hello {
+pub struct Hello{
     pub id: String,
     pub params: ServerDetail,
 }
@@ -42,8 +42,8 @@ pub struct ServerDetail {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct DeviceId {
-    pub device_id: String,
+pub struct DeviceKey {
+    pub device_key: String,
 }
 
 #[derive(Serialize, Deserialize)]
