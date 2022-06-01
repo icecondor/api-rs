@@ -15,6 +15,8 @@ pub enum Commands {
     AuthByEmail(Email),
     #[serde(rename = "hello")]
     Hello(ServerName),
+    #[serde(rename = "user.detail")]
+    UserDetail
 }
 
 #[derive(Serialize, Deserialize)]
