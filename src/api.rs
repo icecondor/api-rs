@@ -37,7 +37,7 @@ pub struct UserId {
 
 #[derive(Serialize, Deserialize)]
 pub struct Session {
-    pub user_id: UserId,
+    pub user_id: String,
     pub device_id: String,
 }
 
