@@ -69,12 +69,14 @@ pub struct QueryById {
 }
 
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
 pub enum Response {
     Error(String),
     Result(Nouns),
 }
 
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
 pub struct JsonRPCRequest {
     pub id: String,
     #[serde(flatten)]
@@ -82,6 +84,7 @@ pub struct JsonRPCRequest {
 }
 
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
 pub struct JsonRPCResponse {
     pub id: String,
     #[serde(flatten)]
