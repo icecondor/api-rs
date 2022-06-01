@@ -43,7 +43,7 @@ impl Peer {
         let session : api::Session = serde_json::from_str(&session_json).unwrap();
         Ok(api::Response {
             msg: "ok".to_string(),
-            noun: Some(api::Nouns::UserId(session.user_id)),
+            result: Some(api::Nouns::UserId(session.user_id)),
         })
     }
 
@@ -51,7 +51,7 @@ impl Peer {
         let user_id = api::Nouns::UserId("abc1".to_string());
         Ok(api::Response {
             msg: "ok".to_string(),
-            noun: Some(user_id),
+            result: Some(user_id),
         })
     }
 }
@@ -64,7 +64,7 @@ pub fn read_op(db: &db::Db, query: &api::QueryById) -> PeerResult {
             let noun: api::Nouns = api::Nouns::Location(location);
             Ok(api::Response {
                 msg: "ok".to_string(),
-                noun: Some(noun),
+                result: Some(noun),
             })
         }
         Err(e) => {
@@ -83,6 +83,6 @@ pub fn write_op(db: &db::Db, location: nouns::location::Location) -> PeerResult 
         .unwrap();
     Ok(api::Response {
         msg: "ok".to_string(),
-        noun: None,
+        result: None,
     })
 }

@@ -85,5 +85,5 @@ pub struct QueryById {
 pub struct Response {
     pub msg: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub noun: Option<Nouns>,
+    pub result: Option<Nouns>,
 }
