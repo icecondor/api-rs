@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::nouns;
 
 #[derive(Serialize, Deserialize)]
-#[serde(tag="method", content="params")]
+#[serde(tag = "method", content = "params")]
 pub enum Commands {
     #[serde(rename = "activity.get")]
     Read(Read),
@@ -14,7 +14,7 @@ pub enum Commands {
     #[serde(rename = "auth.email")]
     AuthByEmail(AuthByEmail),
     #[serde(rename = "hello")]
-    Hello(Hello),
+    Hello(ServerName),
 }
 
 #[derive(Serialize, Deserialize)]
@@ -42,13 +42,7 @@ pub struct Session {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct Hello {
-    pub id: String,
-    pub params: ServerDetail,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct ServerDetail {
+pub struct ServerName {
     pub name: String,
     pub version: String,
 }

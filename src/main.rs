@@ -34,13 +34,10 @@ fn peer_reader(mut stream: TcpStream, db: Arc<db::Db>) {
 
     // hello
     let hello = api::JsonRPCRequest {
-         id: "Bz".to_owned(),
-         method: api::Commands::Hello(api::Hello {
-                      id: "lz".to_owned(),
-                      params: api::ServerDetail {
-                            name: "z".to_owned(),
-                             version: "1".to_owned(),
-                      }
+        id: "Bz".to_owned(),
+        method: api::Commands::Hello(api::ServerName {
+            name: "z".to_owned(),
+            version: "1".to_owned(),
         }),
     };
     let mut hello_json = serde_json::to_string(&hello).unwrap();
@@ -57,7 +54,7 @@ fn peer_reader(mut stream: TcpStream, db: Arc<db::Db>) {
                 println!("{}", line);
                 let result = peer.command(request.method);
                 let response = api::JsonRPCResponse {
-                    id: "a".to_owned(),
+                    id: request.id,
                     result: result,
                 };
                 let mut json = serde_json::to_string(&response).unwrap();
