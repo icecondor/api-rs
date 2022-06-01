@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::nouns;
 
 #[derive(Serialize, Deserialize)]
-#[serde(untagged)]
+#[serde(tag="method", content="params")]
 pub enum Commands {
     #[serde(rename = "activity.get")]
     Read(Read),
