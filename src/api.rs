@@ -17,16 +17,24 @@ pub enum Commands {
     Hello(Hello),
 }
 
+type UserId = String;
+
 #[derive(Serialize, Deserialize)]
 pub enum Nouns {
     Location(nouns::location::Location),
-    UserId(String),
+    UserId(UserId),
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct AuthByDevice {
     pub id: String,
     pub params: DeviceKey,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Session {
+    pub user_id: UserId,
+    pub device_id: String,
 }
 
 #[derive(Serialize, Deserialize)]
