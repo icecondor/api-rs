@@ -26,12 +26,22 @@ pub fn new(db: Arc<db::Db>, redis: redis::Connection) -> Peer {
 impl Peer {
     pub fn command(&mut self, command: api::Commands) -> api::Response {
         match command {
-            api::Commands::Read(read) => read_op(&self.db, &read.params),
-            api::Commands::Write(write) => write_op(&self.db, write.params),
+            api::Commands::Read(read) => self.read_op(&read.params),
+            api::Commands::Write(write) => self.write_op(write.params),
             api::Commands::AuthBySession(device_id) => self.auth_session_op(&device_id),
             api::Commands::AuthByEmail(email) => self.auth_email_op(&email),
+            api::Commands::UserDetail(username) => self.user_detail_op(username),
             _ => api::Response::Error(format!("not implemented")),
         }
+    }
+
+    pub fn user_detail_op(&mut self, username: Option<api::Username>) -> api::Response {
+        let user_id = match username {
+            Some(username) => username,
+            None => self.user_id.unwrap(),
+        };
+        let user = nouns::user::User {};
+        api::Response::Result(api::Nouns::User(user))
     }
 
     pub fn auth_session_op(&mut self, device_key: &api::DeviceKey) -> api::Response {
@@ -40,7 +50,9 @@ impl Peer {
             .hget("session_keys", &device_key.device_key)
             .unwrap();
         let session: api::Session = serde_json::from_str(&session_json).unwrap();
-        api::Response::Result(api::Nouns::UserId(api::UserId{id:session.user_id}))
+        api::Response::Result(api::Nouns::UserId(api::UserId {
+            id: session.user_id,
+        }))
     }
 
     pub fn auth_email_op(&self, _email: &api::Email) -> api::Response {
@@ -49,31 +61,31 @@ impl Peer {
         });
         api::Response::Result(user_id)
     }
-}
 
-pub fn read_op(db: &db::Db, query: &api::QueryById) -> api::Response {
-    let path = db.file_from_id(&query.id);
-    match File::open(&path) {
-        Ok(mut reader) => {
-            let location = nouns::location::Location::parse_from_reader(&mut reader).unwrap();
-            let noun: api::Nouns = api::Nouns::Location(location);
-            api::Response::Result(noun)
-        }
-        Err(e) => {
-            println!("read_op: {} {}", path, e);
-            api::Response::Error(e.to_string())
+    pub fn read_op(&mut self, query: &api::QueryById) -> api::Response {
+        let path = self.db.file_from_id(&query.id);
+        match File::open(&path) {
+            Ok(mut reader) => {
+                let location = nouns::location::Location::parse_from_reader(&mut reader).unwrap();
+                let noun: api::Nouns = api::Nouns::Location(location);
+                api::Response::Result(noun)
+            }
+            Err(e) => {
+                println!("read_op: {} {}", path, e);
+                api::Response::Error(e.to_string())
+            }
         }
     }
-}
 
-pub fn write_op(db: &db::Db, location: nouns::location::Location) -> api::Response {
-    let id = db.write(&location);
-    let path = db.file_from_id(&id);
-    println!("write_op: {}", path);
-    location
-        .write_to_writer(&mut fs::File::create(path).unwrap())
-        .unwrap();
-    api::Response::Result(api::Nouns::UserId(api::UserId {
-        id: "none".to_owned(),
-    }))
+    pub fn write_op(&mut self, location: nouns::location::Location) -> api::Response {
+        let id = self.db.write(&location);
+        let path = self.db.file_from_id(&id);
+        println!("write_op: {}", path);
+        location
+            .write_to_writer(&mut fs::File::create(path).unwrap())
+            .unwrap();
+        api::Response::Result(api::Nouns::UserId(api::UserId {
+            id: "none".to_owned(),
+        }))
+    }
 }

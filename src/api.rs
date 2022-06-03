@@ -2,8 +2,10 @@ use serde::{Deserialize, Serialize};
 
 use crate::nouns;
 
+pub type Username = String;
+
 #[derive(Serialize, Deserialize)]
-#[serde(tag="method", content="params")]
+#[serde(tag = "method", content = "params")]
 pub enum Commands {
     #[serde(rename = "activity.get")]
     Read(Read),
@@ -16,12 +18,13 @@ pub enum Commands {
     #[serde(rename = "hello")]
     Hello(ServerName),
     #[serde(rename = "user.detail")]
-    UserDetail(Option<Username>)
+    UserDetail(Option<Username>),
 }
 
 #[derive(Serialize, Deserialize)]
 pub enum Nouns {
     Location(nouns::location::Location),
+    User(nouns::user::User),
     #[serde(rename = "user")]
     UserId(UserId),
 }
@@ -32,7 +35,7 @@ pub struct UserId {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct Username{
+pub struct ByUsername {
     pub username: String,
 }
 
