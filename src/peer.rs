@@ -36,15 +36,23 @@ impl Peer {
     }
 
     pub fn user_detail_op(&mut self, username: Option<api::Username>) -> api::Response {
-        let user_id = match username {
-            Some(username) => self
-                .db
-                .dgp
-                .get("user".to_owned(), "username".to_owned(), username),
-            None => self.user_id.clone().unwrap(),
-        };
-        let user = nouns::user::User::default();
-        api::Response::Result(api::Nouns::User(user))
+        match username {
+            Some(username) => {
+                self.db
+                    .dgp
+                    .get("user".to_owned(), "username".to_owned(), username);
+                let user = nouns::user::User::default();
+                api::Response::Result(api::Nouns::User(user))
+            }
+            None => match &self.user_id {
+                Some(user_id) => {
+                    user_id;
+                    let user = nouns::user::User::default();
+                    api::Response::Result(api::Nouns::User(user))
+                }
+                None => api::Response::Error("Login or specify a username/id to lookup".to_owned()),
+            },
+        }
     }
 
     pub fn auth_session_op(&mut self, device_key: &api::DeviceKey) -> api::Response {

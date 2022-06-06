@@ -1,7 +1,9 @@
 use dgpdb::db as dgp;
 
 pub fn open() -> Db {
-    return Db { dgp: dgp::open("schema.json".to_owned()) };
+    return Db {
+        dgp: dgp::open("schema.json".to_owned()),
+    };
 }
 
 pub struct Db {
