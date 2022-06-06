@@ -17,20 +17,16 @@ fn write_one_read_one() {
     let mut locations = common::random_locations(1);
     let location = locations.pop().unwrap();
     let location_id = location.id.to_owned();
-    let cmd = api::Commands::Write(api::Write {
-        id: common::id_generate(),
-        params: location,
-    });
+    let cmd = api::Commands::Write(
+        location,
+    );
     let result = peer.command(cmd);
     match result {
         api::Response::Result(_) => assert!(true),
         api::Response::Error(_) => assert!(false),
     }
 
-    let cmd = api::Commands::Read(api::Read {
-        id: common::id_generate(),
-        params: api::ById { id: location_id },
-    });
+    let cmd = api::Commands::Read(api::ById { id: location_id });
     let result = peer.command(cmd);
     match result {
         api::Response::Result(noun) => match noun {
@@ -49,10 +45,7 @@ fn write_many_read_by_id() {
     let locations = common::random_locations(10);
     println!("writing {} locations", locations.len());
     for location in &locations {
-        let cmd = api::Commands::Write(api::Write {
-            id: common::id_generate(),
-            params: location.clone(),
-        });
+        let cmd = api::Commands::Write(location.clone());
         let result = peer.command(cmd);
         match result {
             api::Response::Result(_) => assert!(true),
@@ -60,11 +53,8 @@ fn write_many_read_by_id() {
         }
     }
     for location in &locations {
-        let cmd = api::Commands::Read(api::Read {
-            id: common::id_generate(),
-            params: api::ById {
-                id: location.id.to_owned(),
-            },
+        let cmd = api::Commands::Read(api::ById {
+            id: location.id.to_owned(),
         });
         let result = peer.command(cmd);
         match result {

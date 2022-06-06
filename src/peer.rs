@@ -26,8 +26,8 @@ pub fn new(db: Arc<db::Db>, redis: redis::Connection) -> Peer {
 impl Peer {
     pub fn command(&mut self, command: api::Commands) -> api::Response {
         match command {
-            api::Commands::Read(read) => self.read_op(&read.params),
-            api::Commands::Write(write) => self.write_op(write.params),
+            api::Commands::Read(by_id) => self.read_op(&by_id),
+            api::Commands::Write(location) => self.write_op(location),
             api::Commands::AuthBySession(device_id) => self.auth_session_op(&device_id),
             api::Commands::AuthByEmail(email) => self.auth_email_op(&email),
             api::Commands::UserDetail(by_username) => self.user_detail_op(by_username),

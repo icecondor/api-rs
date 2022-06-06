@@ -8,9 +8,9 @@ pub type Username = String;
 #[serde(tag = "method", content = "params")]
 pub enum Commands {
     #[serde(rename = "activity.get")]
-    Read(Read),
+    Read(ById),
     #[serde(rename = "activity.add")]
-    Write(Write),
+    Write(nouns::location::Location),
     #[serde(rename = "auth.session")]
     AuthBySession(DeviceKey),
     #[serde(rename = "auth.email")]
@@ -59,18 +59,6 @@ pub struct DeviceKey {
 #[derive(Serialize, Deserialize)]
 pub struct Email {
     pub email: String,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct Write {
-    pub id: String,
-    pub params: nouns::location::Location,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct Read {
-    pub id: String,
-    pub params: ById,
 }
 
 #[derive(Serialize, Deserialize)]
