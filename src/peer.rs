@@ -38,9 +38,11 @@ impl Peer {
     pub fn user_detail_op(&mut self, username: Option<api::ByUsername>) -> api::Response {
         match username {
             Some(by_username) => {
-                self.db
-                    .dgp
-                    .get("user".to_owned(), "username".to_owned(), by_username.username);
+                self.db.dgp.get(
+                    "user".to_owned(),
+                    "username".to_owned(),
+                    by_username.username,
+                );
                 let user = nouns::user::User::default();
                 api::Response::Result(api::Nouns::User(user))
             }
@@ -61,19 +63,19 @@ impl Peer {
             .hget("session_keys", &device_key.device_key)
             .unwrap();
         let session: api::Session = serde_json::from_str(&session_json).unwrap();
-        api::Response::Result(api::Nouns::UserId(api::UserId {
+        api::Response::Result(api::Nouns::Id(api::ById {
             id: session.user_id,
         }))
     }
 
     pub fn auth_email_op(&self, _email: &api::Email) -> api::Response {
-        let user_id = api::Nouns::UserId(api::UserId {
+        let user_id = api::Nouns::Id(api::ById {
             id: "abc1".to_string(),
         });
         api::Response::Result(user_id)
     }
 
-    pub fn read_op(&mut self, query: &api::QueryById) -> api::Response {
+    pub fn read_op(&mut self, query: &api::ById) -> api::Response {
         let path = self.db.file_from_id(&query.id);
         match File::open(&path) {
             Ok(mut reader) => {
@@ -95,8 +97,6 @@ impl Peer {
         location
             .write_to_writer(&mut fs::File::create(path).unwrap())
             .unwrap();
-        api::Response::Result(api::Nouns::UserId(api::UserId {
-            id: "none".to_owned(),
-        }))
+        api::Response::Result(api::Nouns::Id(api::ById { id: id }))
     }
 }

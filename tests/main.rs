@@ -21,23 +21,25 @@ fn write_one_read_one() {
         id: common::id_generate(),
         params: location,
     });
-    let json = serde_json::to_string(&cmd).unwrap();
-    let result = peer.command(&json).unwrap();
-    assert_eq!("ok", result.msg);
+    let result = peer.command(cmd);
+    match result {
+        api::Response::Result(_) => assert!(true),
+        api::Response::Error(_) => assert!(false),
+    }
 
     let cmd = api::Commands::Read(api::Read {
         id: common::id_generate(),
-        params: api::QueryById { id: location_id },
+        params: api::ById { id: location_id },
     });
-    let json = serde_json::to_string(&cmd).unwrap();
-    let result = peer.command(&json).unwrap();
-    assert_eq!("ok", result.msg);
-    let noun = result.noun.unwrap();
-    match noun {
-        api::Nouns::Location(loc) => {
-            assert_eq!("2022-05-02", loc.date)
-        }
-        _ => assert!(false),
+    let result = peer.command(cmd);
+    match result {
+        api::Response::Result(noun) => match noun {
+            api::Nouns::Location(loc) => {
+                assert_eq!("2022-05-02", loc.date)
+            }
+            _ => assert!(false),
+        },
+        api::Response::Error(_) => assert!(false),
     }
 }
 
@@ -51,48 +53,49 @@ fn write_many_read_by_id() {
             id: common::id_generate(),
             params: location.clone(),
         });
-        let json = serde_json::to_string(&cmd).unwrap();
-        let result = peer.command(&json).unwrap();
-        assert_eq!("ok", result.msg);
+        let result = peer.command(cmd);
+        match result {
+            api::Response::Result(_) => assert!(true),
+            api::Response::Error(_) => assert!(false),
+        }
     }
     for location in &locations {
         let cmd = api::Commands::Read(api::Read {
             id: common::id_generate(),
-            params: api::QueryById {
+            params: api::ById {
                 id: location.id.to_owned(),
             },
         });
-        let json = serde_json::to_string(&cmd).unwrap();
-        let result = peer.command(&json).unwrap();
-        assert_eq!("ok", result.msg);
+        let result = peer.command(cmd);
+        match result {
+            api::Response::Result(_) => assert!(true),
+            api::Response::Error(_) => assert!(false),
+        }
     }
 }
 
 #[test]
 fn auth_by_device() {
     let mut peer = setup();
-    let cmd = api::Commands::AuthBySession(api::AuthByDevice {
-        id: common::id_generate(),
-        params: api::DeviceId {
-            device_id: "devicekey1".to_owned(),
-        },
+    let cmd = api::Commands::AuthBySession(api::DeviceKey {
+        device_key: "devicekey1".to_owned(),
     });
-    let json = serde_json::to_string(&cmd).unwrap();
-    println!("test auth_by_device {}", json);
-    let result = peer.command(&json).unwrap();
-    assert_eq!("ok", result.msg);
+    let result = peer.command(cmd);
+    match result {
+        api::Response::Result(_) => assert!(true),
+        api::Response::Error(_) => assert!(false),
+    }
 }
 
 #[test]
 fn auth_by_email() {
     let mut peer = setup();
-    let cmd = api::Commands::AuthByEmail(api::AuthByEmail {
-        id: common::id_generate(),
-        params: api::Email {
-            email: "a@b.c".to_string(),
-        },
+    let cmd = api::Commands::AuthByEmail(api::Email {
+        email: "a@b.c".to_string(),
     });
-    let json = serde_json::to_string(&cmd).unwrap();
-    let result = peer.command(&json).unwrap();
-    assert_eq!("ok", result.msg);
+    let result = peer.command(cmd);
+    match result {
+        api::Response::Result(_) => assert!(true),
+        api::Response::Error(_) => assert!(false),
+    }
 }

@@ -26,7 +26,7 @@ pub enum Nouns {
     Location(nouns::location::Location),
     User(nouns::user::User),
     #[serde(rename = "user")]
-    UserId(UserId),
+    Id(ById),
 }
 
 #[derive(Serialize, Deserialize)]
@@ -70,11 +70,11 @@ pub struct Write {
 #[derive(Serialize, Deserialize)]
 pub struct Read {
     pub id: String,
-    pub params: QueryById,
+    pub params: ById,
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct QueryById {
+pub struct ById {
     pub id: String,
 }
 
