@@ -2,6 +2,7 @@ use std::fs;
 use std::fs::File;
 use std::sync::Arc;
 
+use liquid;
 use protobuf::Message;
 use redis::Commands;
 
@@ -26,11 +27,11 @@ pub fn new(db: Arc<db::Db>, redis: redis::Connection) -> Peer {
 impl Peer {
     pub fn command(&mut self, command: api::Commands) -> api::Response {
         match command {
-            api::Commands::Read(by_id) => self.read_op(&by_id),
-            api::Commands::Write(location) => self.write_op(location),
             api::Commands::AuthBySession(device_id) => self.auth_session_op(&device_id),
             api::Commands::AuthByEmail(email) => self.auth_email_op(&email),
             api::Commands::UserDetail(by_username) => self.user_detail_op(by_username),
+            api::Commands::Read(by_id) => self.read_op(&by_id),
+            api::Commands::Write(location) => self.write_op(location),
             _ => api::Response::Error(format!("not implemented")),
         }
     }
@@ -58,7 +59,10 @@ impl Peer {
     }
 
     pub fn auth_session_op(&mut self, device_key: &api::DeviceKey) -> api::Response {
-        match self.redis.hget::<_,_,String>("session_keys", &device_key.device_key) {
+        match self
+            .redis
+            .hget::<_, _, String>("session_keys", &device_key.device_key)
+        {
             Ok(session_json) => {
                 let session: api::Session = serde_json::from_str(&session_json).unwrap();
                 api::Response::Result(api::Nouns::Id(api::ById {
@@ -69,7 +73,14 @@ impl Peer {
         }
     }
 
+    //{id:... "method":"auth.email","params":{"email":"a@b.c","device_id":"browser"}}
+    //{id:... "result":{"status":"OK"}}
     pub fn auth_email_op(&self, _email: &api::Email) -> api::Response {
+        let template = liquid::ParserBuilder::with_stdlib()
+            .build()
+            .unwrap()
+            .parse("Liquid! {{num | minus: 2}}")
+            .unwrap();
         let user_id = api::Nouns::Id(api::ById {
             id: "abc1".to_string(),
         });
