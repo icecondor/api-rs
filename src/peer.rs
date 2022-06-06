@@ -58,14 +58,15 @@ impl Peer {
     }
 
     pub fn auth_session_op(&mut self, device_key: &api::DeviceKey) -> api::Response {
-        let session_json: String = self
-            .redis
-            .hget("session_keys", &device_key.device_key)
-            .unwrap();
-        let session: api::Session = serde_json::from_str(&session_json).unwrap();
-        api::Response::Result(api::Nouns::Id(api::ById {
-            id: session.user_id,
-        }))
+        match self.redis.hget::<_,_,String>("session_keys", &device_key.device_key) {
+            Ok(session_json) => {
+                let session: api::Session = serde_json::from_str(&session_json).unwrap();
+                api::Response::Result(api::Nouns::Id(api::ById {
+                    id: session.user_id,
+                }))
+            }
+            Err(_) => api::Response::Error("missing session".to_owned()),
+        }
     }
 
     pub fn auth_email_op(&self, _email: &api::Email) -> api::Response {

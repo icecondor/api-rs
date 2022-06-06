@@ -17,9 +17,7 @@ fn write_one_read_one() {
     let mut locations = common::random_locations(1);
     let location = locations.pop().unwrap();
     let location_id = location.id.to_owned();
-    let cmd = api::Commands::Write(
-        location,
-    );
+    let cmd = api::Commands::Write(location);
     let result = peer.command(cmd);
     match result {
         api::Response::Result(_) => assert!(true),
