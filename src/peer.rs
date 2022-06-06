@@ -30,17 +30,17 @@ impl Peer {
             api::Commands::Write(write) => self.write_op(write.params),
             api::Commands::AuthBySession(device_id) => self.auth_session_op(&device_id),
             api::Commands::AuthByEmail(email) => self.auth_email_op(&email),
-            api::Commands::UserDetail(username) => self.user_detail_op(username),
+            api::Commands::UserDetail(by_username) => self.user_detail_op(by_username),
             _ => api::Response::Error(format!("not implemented")),
         }
     }
 
-    pub fn user_detail_op(&mut self, username: Option<api::Username>) -> api::Response {
+    pub fn user_detail_op(&mut self, username: Option<api::ByUsername>) -> api::Response {
         match username {
-            Some(username) => {
+            Some(by_username) => {
                 self.db
                     .dgp
-                    .get("user".to_owned(), "username".to_owned(), username);
+                    .get("user".to_owned(), "username".to_owned(), by_username.username);
                 let user = nouns::user::User::default();
                 api::Response::Result(api::Nouns::User(user))
             }

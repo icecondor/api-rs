@@ -18,7 +18,7 @@ pub enum Commands {
     #[serde(rename = "hello")]
     Hello(ServerName),
     #[serde(rename = "user.detail")]
-    UserDetail(Option<Username>),
+    UserDetail(Option<ByUsername>),
 }
 
 #[derive(Serialize, Deserialize)]
