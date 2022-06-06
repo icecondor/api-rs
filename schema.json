@@ -1,8 +1,34 @@
-{"location" :{
+{
+  "location": {
     "indexes": [
-      {"name":"date", "fields":["date"], "options":{ "multi": true }},
-      {"name":"user_id_date", "fields":["user_id", "date"], "options":{} }
+      {
+        "name": "date",
+        "fields": [
+          "date"
+        ],
+        "options": {
+          "multi": true
+        }
+      },
+      {
+        "name": "user_id_date",
+        "fields": [
+          "user_id",
+          "date"
+        ],
+        "options": {}
+      }
     ]
-}}
-
-
+  },
+  "user": {
+    "indexes": [
+      {
+        "name": "username",
+        "fields": [
+          "username"
+        ],
+        "options": {}
+      }
+    ]
+  }
+}

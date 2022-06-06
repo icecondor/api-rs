@@ -37,10 +37,13 @@ impl Peer {
 
     pub fn user_detail_op(&mut self, username: Option<api::Username>) -> api::Response {
         let user_id = match username {
-            Some(username) => username,
-            None => self.user_id.unwrap(),
+            Some(username) => self
+                .db
+                .dgp
+                .get("user".to_owned(), "username".to_owned(), username),
+            None => self.user_id.clone().unwrap(),
         };
-        let user = nouns::user::User {};
+        let user = nouns::user::User::default();
         api::Response::Result(api::Nouns::User(user))
     }
 
@@ -78,7 +81,7 @@ impl Peer {
     }
 
     pub fn write_op(&mut self, location: nouns::location::Location) -> api::Response {
-        let id = self.db.write(&location);
+        let id = self.db.dgp.put(&location);
         let path = self.db.file_from_id(&id);
         println!("write_op: {}", path);
         location
