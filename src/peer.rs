@@ -8,6 +8,7 @@ use redis::Commands;
 
 use crate::api;
 use crate::db;
+use crate::email;
 use crate::nouns;
 
 pub struct Peer {
@@ -75,12 +76,13 @@ impl Peer {
 
     //{id:... "method":"auth.email","params":{"email":"a@b.c","device_id":"browser"}}
     //{id:... "result":{"status":"OK"}}
-    pub fn auth_email_op(&self, _email: &api::Email) -> api::Response {
-        let template = liquid::ParserBuilder::with_stdlib()
-            .build()
-            .unwrap()
-            .parse("Liquid! {{num | minus: 2}}")
-            .unwrap();
+    pub fn auth_email_op(&self, email: &api::Email) -> api::Response {
+        let template = email::signin();
+        let globals = liquid::object!({
+            "session_key": "abkey"
+        });
+        let html = template.render(&globals).unwrap();
+
         let user_id = api::Nouns::Id(api::ById {
             id: "abc1".to_string(),
         });
