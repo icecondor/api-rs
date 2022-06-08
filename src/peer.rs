@@ -73,14 +73,14 @@ impl Peer {
 
     //{id:... "method":"auth.email","params":{"email":"a@b.c","device_id":"browser"}}
     //{id:... "result":{"status":"OK"}}
-    pub fn auth_email_op(&self, email: &api::Email) -> api::Response {
+    pub fn auth_email_op(&mut self, email: &api::Email) -> api::Response {
         let session = session::Session::new(email.device_id.to_owned());
         let json = serde_json::to_string(&session).unwrap();
-        println!("JSON {}", json);
+        println!("hset {} {}", session.id, json);
 
         match self
             .redis
-            .hset::<_, _, String>("session_keys", &session.id, json)
+            .hset::<_, _, String, String>("session_keys", &session.id, json)
         {
             Ok(session_json) => {}
             Err(_) => {}
