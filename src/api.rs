@@ -59,6 +59,7 @@ pub struct DeviceKey {
 #[derive(Serialize, Deserialize)]
 pub struct Email {
     pub email: String,
+    pub device_id: String,
 }
 
 #[derive(Serialize, Deserialize)]

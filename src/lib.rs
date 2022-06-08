@@ -6,6 +6,7 @@ pub mod net;
 pub mod nouns;
 pub mod peer;
 pub mod pool;
+pub mod session;
 
 use once_cell::sync::Lazy;
 

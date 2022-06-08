@@ -6,10 +6,7 @@ use liquid;
 use protobuf::Message;
 use redis::Commands;
 
-use crate::api;
-use crate::db;
-use crate::email;
-use crate::nouns;
+use crate::*;
 
 pub struct Peer {
     pub user_id: Option<String>,
@@ -77,6 +74,7 @@ impl Peer {
     //{id:... "method":"auth.email","params":{"email":"a@b.c","device_id":"browser"}}
     //{id:... "result":{"status":"OK"}}
     pub fn auth_email_op(&self, email: &api::Email) -> api::Response {
+        let session = session::Session::new(email.device_id.to_owned());
         let template = email::signin();
         let globals = liquid::object!({
             "session_key": "abkey"
