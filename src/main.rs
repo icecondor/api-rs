@@ -5,13 +5,12 @@ use std::sync::Arc;
 use api_rs::*;
 
 fn main() {
-    let config = config::load();
     let db = Arc::new(db::open());
 
-    let net = net::setup(&config.addr);
+    let net = net::setup(&CONFIG.addr);
     let mut pool = pool::new();
 
-    println!("listening {}", config.addr);
+    println!("listening {}", CONFIG.addr);
     for stream in net.listener.incoming() {
         let dbc = db.clone();
         match stream {
