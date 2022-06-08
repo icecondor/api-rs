@@ -75,12 +75,14 @@ impl Peer {
     //{id:... "result":{"status":"OK"}}
     pub fn auth_email_op(&self, email: &api::Email) -> api::Response {
         let session = session::Session::new(email.device_id.to_owned());
+        println!("JSON {}", serde_json::toString(session));
+
         let template = email::signin();
         let globals = liquid::object!({
             "session_key": "abkey"
         });
         let html = template.render(&globals).unwrap();
-        println!("{}", html);
+        println!("HTML {}", html);
 
         let user_id = api::Nouns::Id(api::ById {
             id: "abc1".to_string(),
