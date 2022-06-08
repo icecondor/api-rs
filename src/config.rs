@@ -5,6 +5,7 @@ use std::fs;
 #[derive(Serialize, Deserialize, Default)]
 pub struct Config {
     pub addr: String,
+    pub template_path: String,
 }
 
 pub fn load() -> Config {

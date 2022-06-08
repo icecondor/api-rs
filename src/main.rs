@@ -6,7 +6,6 @@ use api_rs::*;
 
 fn main() {
     let db = Arc::new(db::open());
-
     let net = net::setup(&CONFIG.addr);
     let mut pool = pool::new();
 

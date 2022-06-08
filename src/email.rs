@@ -1,18 +1,15 @@
 use liquid;
+use std::fs;
+use std::path;
 
 use crate::CONFIG;
 
-pub struct Email {
-    template_path: String,
+pub fn load_template(name: String) {
+    let filename = path::Path::new(&CONFIG.template_path).join(&name);
+    let reader = fs::File::open(filename).unwrap();
 }
 
-pub fn init(path: String) -> Email {
-    return Email {
-        template_path: path,
-    };
-}
 pub fn signin() -> liquid::Template {
-    let _f = CONFIG.addr.to_owned();
     liquid::ParserBuilder::with_stdlib()
         .build()
         .unwrap()
