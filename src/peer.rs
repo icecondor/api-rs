@@ -82,6 +82,7 @@ impl Peer {
             "session_key": "abkey"
         });
         let html = template.render(&globals).unwrap();
+        println!("{}", html);
 
         let user_id = api::Nouns::Id(api::ById {
             id: "abc1".to_string(),

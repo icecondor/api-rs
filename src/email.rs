@@ -4,15 +4,16 @@ use std::path;
 
 use crate::CONFIG;
 
-pub fn load_template(name: String) {
+pub fn load_template(name: &str) -> String {
     let filename = path::Path::new(&CONFIG.template_path).join(&name);
-    let reader = fs::File::open(filename).unwrap();
+    fs::read_to_string(filename).unwrap()
+
 }
 
 pub fn signin() -> liquid::Template {
     liquid::ParserBuilder::with_stdlib()
         .build()
         .unwrap()
-        .parse("{{session_key}}")
+        .parse(&load_template("signin"))
         .unwrap()
 }
