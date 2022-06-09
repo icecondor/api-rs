@@ -16,7 +16,10 @@
           "user_id",
           "date"
         ],
-        "options": {}
+        "options": {
+          "lowercase": true,
+          "unique": true
+        }
       }
     ]
   },
@@ -27,7 +30,10 @@
         "fields": [
           "username"
         ],
-        "options": {}
+        "options": {
+          "lowercase": true,
+          "unique": true
+        }
       }
     ]
   }
