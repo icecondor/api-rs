@@ -6,6 +6,7 @@ use liquid;
 use protobuf::Message;
 use redis::Commands;
 
+use crate::nouns::*;
 use crate::*;
 
 pub struct Peer {
@@ -37,11 +38,11 @@ impl Peer {
     pub fn user_detail_op(&mut self, username: Option<api::ByUsername>) -> api::Response {
         match username {
             Some(by_username) => {
-                self.db.dgp.get(
-                    "user".to_owned(),
-                    "username".to_owned(),
-                    by_username.username,
-                );
+                let user_id = self
+                    .db
+                    .dgp
+                    .get("user", "username", by_username.username)
+                    .unwrap();
                 let user = nouns::user::User::default();
                 api::Response::Result(api::Nouns::User(user))
             }
@@ -74,7 +75,17 @@ impl Peer {
     //{id:... "method":"auth.email","params":{"email":"a@b.c","device_id":"browser"}}
     //{id:... "result":{"status":"OK"}}
     pub fn auth_email_op(&mut self, email: &api::Email) -> api::Response {
-        let session = session::Session::new(email.device_id.to_owned());
+        let user = match self.db.user_by_email(&email.email) {
+            Ok(user) => {
+                println!("auth_email_op user_by_email {} found", email.email);
+                user
+            }
+            Err(_) => {
+                println!("auth_email_op user_by_email {} NOT found", email.email);
+                user::User::default()
+            }
+        };
+        let session = session::Session::new(email.device_id.to_owned(), user.id);
         let json = serde_json::to_string(&session).unwrap();
         println!("hset {} {}", session.id, json);
 
@@ -100,7 +111,7 @@ impl Peer {
     }
 
     pub fn read_op(&mut self, query: &api::ById) -> api::Response {
-        let path = self.db.file_from_id(&query.id);
+        let path = self.db.filename_from_id(&query.id);
         match File::open(&path) {
             Ok(mut reader) => {
                 let location = nouns::location::Location::parse_from_reader(&mut reader).unwrap();
@@ -116,7 +127,7 @@ impl Peer {
 
     pub fn write_op(&mut self, location: nouns::location::Location) -> api::Response {
         let id = self.db.dgp.put(&location);
-        let path = self.db.file_from_id(&id);
+        let path = self.db.filename_from_id(&id);
         println!("write_op: {}", path);
         location
             .write_to_writer(&mut fs::File::create(path).unwrap())
