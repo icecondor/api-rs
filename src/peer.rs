@@ -82,7 +82,10 @@ impl Peer {
             }
             Err(_) => {
                 println!("auth_email_op user_by_email {} NOT found", email.email);
-                user::User::default()
+                let mut user = user::User::default();
+                user.email = email.email.clone();
+                user.id = uuid::Uuid::new_v4().to_string();
+                user
             }
         };
         let session = session::Session::new(email.device_id.to_owned(), user.id);
