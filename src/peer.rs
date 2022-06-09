@@ -62,6 +62,7 @@ impl Peer {
             .hget::<_, _, String>("session_keys", &device_key.device_key)
         {
             Ok(session_json) => {
+                println!("auth.session hget {} => {}", &device_key.device_key, &session_json);
                 let session: api::Session = serde_json::from_str(&session_json).unwrap();
                 api::Response::Result(api::Nouns::Id(api::ById {
                     id: session.user_id,
