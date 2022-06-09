@@ -25,10 +25,20 @@
   },
   "user": {
     "indexes": [
-      {
+       {
         "name": "username",
         "fields": [
           "username"
+        ],
+        "options": {
+          "lowercase": true,
+          "unique": true
+        }
+      },
+      {
+        "name": "email",
+        "fields": [
+          "email"
         ],
         "options": {
           "lowercase": true,

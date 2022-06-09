@@ -22,9 +22,10 @@ impl Db {
     pub fn save_to_file<T: protobuf::MessageFull>(&self, value: &T) {
         let id = dgp::id_value(value);
         let filename = self.filename_from_id(&id);
-        let mut writer = fs::File::create(filename).unwrap();
+        let mut writer = fs::File::create(&filename).unwrap();
         let mut cos = protobuf::CodedOutputStream::new(&mut writer);
         value.write_to(&mut cos).unwrap();
+        println!("{} saved {}", filename, T::descriptor().name())
     }
 
     pub fn write<T: protobuf::MessageFull>(&self, value: &T) -> String {
