@@ -85,6 +85,7 @@ impl Peer {
                 let mut user = user::User::default();
                 user.email = email.email.clone();
                 user.id = uuid::Uuid::new_v4().to_string();
+                self.db.dgp.put(&user);
                 user
             }
         };
