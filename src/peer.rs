@@ -83,7 +83,7 @@ impl Peer {
                 println!("auth_email_op user_by_email {} NOT found", email.email);
                 let mut user = user::User::default();
                 user.email = email.email.clone();
-                user.id = uuid::Uuid::new_v4().to_string();
+                user.id = dgpdb::db::id_new(&user);
                 self.db.save_to_file(&user);
                 self.db.dgp.put(&user);
                 user
