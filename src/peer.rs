@@ -43,13 +43,12 @@ impl Peer {
                     .dgp
                     .get("user", "username", by_username.username)
                     .unwrap();
-                let user = nouns::user::User::default();
+                let user = self.db.user_by_id(&user_id);
                 api::Response::Result(api::Nouns::User(user))
             }
             None => match &self.user_id {
                 Some(user_id) => {
-                    user_id;
-                    let user = nouns::user::User::default();
+                    let user = self.db.user_by_id(user_id);
                     api::Response::Result(api::Nouns::User(user))
                 }
                 None => api::Response::Error("Login or specify a username/id to lookup".to_owned()),
@@ -97,7 +96,7 @@ impl Peer {
             .redis
             .hset::<_, _, String, String>("session_keys", &session.id, json)
         {
-            Ok(session_json) => {}
+            Ok(field_count) => {println!("auth_email_op hset {}", field_count)}
             Err(_) => {}
         }
 
