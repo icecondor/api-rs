@@ -84,6 +84,7 @@ impl Peer {
                 let mut user = user::User::default();
                 user.email = email.email.clone();
                 user.id = uuid::Uuid::new_v4().to_string();
+                self.db.save_to_file(&user);
                 self.db.dgp.put(&user);
                 user
             }
@@ -96,7 +97,9 @@ impl Peer {
             .redis
             .hset::<_, _, String, String>("session_keys", &session.id, json)
         {
-            Ok(field_count) => {println!("auth_email_op hset {}", field_count)}
+            Ok(field_count) => {
+                println!("auth_email_op hset {}", field_count)
+            }
             Err(_) => {}
         }
 
