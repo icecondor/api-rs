@@ -10,14 +10,14 @@ use crate::nouns::*;
 use crate::*;
 
 pub struct Peer {
-    pub user_id: Option<String>,
+    pub session: Option<api::Session>,
     pub db: Arc<db::Db>,
     pub redis: redis::Connection,
 }
 
 pub fn new(db: Arc<db::Db>, redis: redis::Connection) -> Peer {
     Peer {
-        user_id: None,
+        session: None,
         db: db,
         redis: redis,
     }
@@ -46,9 +46,9 @@ impl Peer {
                 let user = self.db.user_by_id(&user_id);
                 api::Response::Result(api::Nouns::User(user))
             }
-            None => match &self.user_id {
-                Some(user_id) => {
-                    let user = self.db.user_by_id(user_id);
+            None => match &self.session {
+                Some(session) => {
+                    let user = self.db.user_by_id(&session.user_id);
                     api::Response::Result(api::Nouns::User(user))
                 }
                 None => api::Response::Error("Login or specify a username/id to lookup".to_owned()),
@@ -62,11 +62,14 @@ impl Peer {
             .hget::<_, _, String>("session_keys", &device_key.device_key)
         {
             Ok(session_json) => {
-                println!("auth.session hget {} => {}", &device_key.device_key, &session_json);
+                println!(
+                    "auth.session hget {} => {}",
+                    &device_key.device_key, &session_json
+                );
                 let session: api::Session = serde_json::from_str(&session_json).unwrap();
-                api::Response::Result(api::Nouns::Id(api::ById {
-                    id: session.user_id,
-                }))
+                let user_id = session.user_id.clone();
+                self.session = Some(session);
+                api::Response::Result(api::Nouns::Id(api::ById { id: user_id }))
             }
             Err(_) => api::Response::Error("missing session".to_owned()),
         }
@@ -112,7 +115,7 @@ impl Peer {
         println!("HTML {}", html);
 
         let user_id = api::Nouns::Id(api::ById {
-            id: "abc1".to_string(),
+            id: session.user_id,
         });
         api::Response::Result(user_id)
     }
