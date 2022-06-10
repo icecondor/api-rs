@@ -19,6 +19,8 @@ pub enum Commands {
     Hello(ServerName),
     #[serde(rename = "user.detail")]
     UserDetail(Option<ByUsername>),
+    #[serde(rename = "user.update")]
+    UserUpdate(ByUpdatableUser),
 }
 
 #[derive(Serialize, Deserialize)]
@@ -27,6 +29,12 @@ pub enum Nouns {
     User(nouns::user::User),
     #[serde(rename = "user")]
     Id(ById),
+    None,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct ByUpdatableUser {
+    pub username: Option<String>,
 }
 
 #[derive(Serialize, Deserialize)]

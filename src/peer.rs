@@ -29,9 +29,28 @@ impl Peer {
             api::Commands::AuthBySession(device_id) => self.auth_session_op(&device_id),
             api::Commands::AuthByEmail(email) => self.auth_email_op(&email),
             api::Commands::UserDetail(by_username) => self.user_detail_op(by_username),
+            api::Commands::UserUpdate(by_username) => self.user_update_op(by_username),
             api::Commands::Read(by_id) => self.read_op(&by_id),
             api::Commands::Write(location) => self.write_op(location),
             _ => api::Response::Error(format!("not implemented")),
+        }
+    }
+
+    pub fn user_update_op(&mut self, user_update: api::ByUpdatableUser) -> api::Response {
+        match &self.session {
+            Some(session) => {
+                let mut user = self.db.user_by_id(&session.user_id);
+                match user_update.username {
+                    Some(username) => {
+                        println!("updating username {} to {}", user.username, username);
+                        user.username = username;
+                    }
+                    None => (),
+                }
+                self.db.write(&user);
+                api::Response::Result(api::Nouns::None)
+            }
+            None => api::Response::Error("Login first".to_string()),
         }
     }
 
