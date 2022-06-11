@@ -29,6 +29,7 @@ impl Db {
     }
 
     pub fn write<T: protobuf::MessageFull>(&self, value: &T) -> String {
+        self.save_to_file(value);
         self.dgp.put(value)
     }
 
