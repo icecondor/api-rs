@@ -86,8 +86,8 @@ impl Peer {
                     &device_key.device_key, &session_json
                 );
                 let session: api::Session = serde_json::from_str(&session_json).unwrap();
-                let user_id = session.user_id.clone();
                 let user = self.db.user_by_id(&session.user_id);
+                self.session = Some(session);
                 api::Response::Result(api::Nouns::User(user))
             }
             Err(_) => api::Response::Error("missing session".to_owned()),
