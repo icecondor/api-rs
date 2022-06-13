@@ -87,8 +87,8 @@ impl Peer {
                 );
                 let session: api::Session = serde_json::from_str(&session_json).unwrap();
                 let user_id = session.user_id.clone();
-                self.session = Some(session);
-                api::Response::Result(api::Nouns::Id(api::ById { id: user_id }))
+                let user = self.db.user_by_id(&session.user_id);
+                api::Response::Result(api::Nouns::User(user))
             }
             Err(_) => api::Response::Error("missing session".to_owned()),
         }

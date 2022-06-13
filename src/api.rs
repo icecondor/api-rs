@@ -24,6 +24,7 @@ pub enum Commands {
 }
 
 #[derive(Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
 pub enum Nouns {
     Location(nouns::location::Location),
     User(nouns::user::User),
