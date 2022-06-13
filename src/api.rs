@@ -27,6 +27,7 @@ pub enum Commands {
 #[serde(rename_all = "lowercase")]
 pub enum Nouns {
     Location(nouns::location::Location),
+    #[serde(rename = "user")]
     User(nouns::user::User),
     #[serde(rename = "user")]
     Id(ById),
