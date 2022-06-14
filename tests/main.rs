@@ -11,6 +11,21 @@ fn setup() -> peer::Peer {
     peer::new(Arc::new(db), con)
 }
 
+fn login(peer: &mut peer::Peer) -> String {
+    let cmd = api::Commands::AuthByEmail(api::Email {
+        email: "a@b.c".to_string(),
+        device_id: "browser".to_string()
+    });
+    let result = peer.command(cmd);
+    match result {
+        api::Response::Result(session) => match session {
+            api::Nouns::Id(by_id) => by_id.id,
+            _ => panic!()
+        },
+        api::Response::Error(_) => panic!(),
+    }
+}
+
 #[test]
 fn write_one_read_one() {
     let mut peer = setup();
@@ -65,13 +80,15 @@ fn write_many_read_by_id() {
 #[test]
 fn auth_by_device() {
     let mut peer = setup();
+    let key = login(&mut peer);
+    println!("login returned {}", key);
     let cmd = api::Commands::AuthBySession(api::DeviceKey {
-        device_key: "devicekey1".to_owned(),
+        device_key: key,
     });
     let result = peer.command(cmd);
     match result {
         api::Response::Result(_) => assert!(true),
-        api::Response::Error(_) => assert!(false),
+        api::Response::Error(e) => assert!(false, "{}", e),
     }
 }
 
@@ -80,6 +97,7 @@ fn auth_by_email() {
     let mut peer = setup();
     let cmd = api::Commands::AuthByEmail(api::Email {
         email: "a@b.c".to_string(),
+        device_id: "browser".to_string()
     });
     let result = peer.command(cmd);
     match result {

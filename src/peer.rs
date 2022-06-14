@@ -90,7 +90,7 @@ impl Peer {
                 self.session = Some(session);
                 api::Response::Result(api::Nouns::User(user))
             }
-            Err(_) => api::Response::Error("missing session".to_owned()),
+            Err(_) => api::Response::Error("device_key does not exist".to_owned()),
         }
     }
 
@@ -134,7 +134,7 @@ impl Peer {
         println!("HTML {}", html);
 
         let user_id = api::Nouns::Id(api::ById {
-            id: session.user_id,
+            id: session.id,
         });
         api::Response::Result(user_id)
     }
