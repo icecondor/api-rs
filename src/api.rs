@@ -21,6 +21,8 @@ pub enum Commands {
     UserDetail(Option<ByUsername>),
     #[serde(rename = "user.update")]
     UserUpdate(ByUpdatableUser),
+    #[serde(rename = "stream.follow")]
+    StreamFollow(ByFollowParams),
 }
 
 #[derive(Serialize, Deserialize)]
@@ -35,6 +37,15 @@ pub enum Nouns {
 #[derive(Serialize, Deserialize)]
 pub struct ByUpdatableUser {
     pub username: Option<String>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct ByFollowParams{
+    pub username: Option<String>,
+    pub r#type: Option<String>,
+    pub count: Option<i32>,
+    pub order: Option<String>,
+    pub follow: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize)]
