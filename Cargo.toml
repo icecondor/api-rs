@@ -26,5 +26,5 @@ features = [
 
 
 [build-dependencies]
-protobuf = "3.0"
+protobuf = "3.0.3"
 protobuf-codegen = "3.0"
